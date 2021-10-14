@@ -1,6 +1,14 @@
 from maya import cmds
 from maya import mel
 
+
+class LocalConstants:
+    option_var_key = "ClipboardOverloadMapping"
+    
+
+lk = LocalConstants
+
+
 function_mappings = {
     "clipboard_transforms": {
         "copy": "import copy_paste_overload.clipboard_transforms; copy_paste_overload.clipboard_transforms.copy_selected_transforms_to_clipboard()",
@@ -36,8 +44,10 @@ def overload_copy_paste(target_mapping, *args, **kwargs):
     mel.eval('''global proc pasteScene(){{
     python("{}");
     }}'''.format(run_command_paste))
-
-    cmds.optionVar(stringValue=("ClipboardOverloadMapping", target_mapping))
+    
+    cmds.optionVar(stringValue=(lk.option_var_key, target_mapping))
+    
+    return True
 
 
 def reset_copy_paste():
@@ -46,7 +56,7 @@ def reset_copy_paste():
 
 def disable_copy_paste_overload():
     print("Disabling copy-paste-overload")
-    cmds.optionVar(stringValue=("ClipboardOverloadMapping", ""))
+    cmds.optionVar(stringValue=(lk.option_var_key, ""))
     reset_copy_paste()
 
 
@@ -63,11 +73,14 @@ def setup_maya_hotkey(shortcut_name, shortcut, command_str):
     hotkey_set_name = "UserHotkeys"
 
     # make sure we have a user editable hotkey set active
-    if cmds.hotkeySet(current=True, q=True) == "Maya_Default":
-        if not cmds.hotkeySet(hotkey_set_name, exists=True):
-            cmds.hotkeySet(hotkey_set_name, source="Maya_Default")
-        cmds.hotkeySet(hotkey_set_name, edit=True, current=True)
-
+    
+    # for some reason this doesn't work in batch mode? guessing some prefs aren't initialzed
+    if not cmds.about(batch=True):
+        if cmds.hotkeySet(current=True, q=True) == "Maya_Default":
+            if not cmds.hotkeySet(hotkey_set_name, exists=True):
+                cmds.hotkeySet(hotkey_set_name, source="Maya_Default")
+            cmds.hotkeySet(hotkey_set_name, edit=True, current=True)
+        
     name_command = '{0}Command'.format(shortcut_name)
     shortcut_key = shortcut.split("+")[-1]
 
