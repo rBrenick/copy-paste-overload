@@ -78,6 +78,10 @@ def paste_transforms_from_clipboard(world_space=False):
                 if world_space and attribute_name in world_space_affecting_attrs:
                     continue
 
+                # skip if attribute doesn't exist
+                if not pm.attributeQuery(attribute_name, exists=True, node=node):
+                    continue
+
                 # skip if attribute is locked or something like that
                 if not node.getAttr(attribute_name, settable=True):
                     continue
