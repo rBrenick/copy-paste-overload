@@ -85,13 +85,18 @@ def setup_maya_hotkey(shortcut_name, shortcut, command_str):
     shortcut_key = shortcut.split("+")[-1]
 
     if not cmds.runTimeCommand(shortcut_name, exists=True):
-        cmds.runTimeCommand(shortcut_name, command=command_str,
-                            annotation="Paste transform from clipboard into world space",
-                            category="Custom", default=True)
+        cmds.runTimeCommand(
+            shortcut_name,
+            command=command_str,
+            annotation="Paste transform from clipboard into world space",
+            category="Custom",
+        )
 
-    cmds.nameCommand(name_command, command=shortcut_name,
-                     annotation="Paste transform from clipboard into world space",
-                     default=True)
+    cmds.nameCommand(
+        name_command,
+        command=shortcut_name,
+        annotation="Paste transform from clipboard into world space",
+    )
 
     cmds.hotkey(keyShortcut=shortcut_key, name=name_command,
                 ctl="ctrl" in shortcut.lower(),
