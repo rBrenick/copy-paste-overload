@@ -10,6 +10,7 @@ class CopyPasteOverloadWindow(ui_utils.BaseWindow):
 
         for cb_key, cb_data in cpos.function_mappings.items():
             self.add_button(cb_data.get("nice_name"), cpos.overload_copy_paste, cb_key)
+
         self.add_button("Setup 'Ctrl+Shift+V' World Space Paste", cpos.setup_world_space_paste_hotkey)
         self.add_button("Reset Copy Paste", cpos.disable_copy_paste_overload)
 

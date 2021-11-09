@@ -15,14 +15,14 @@ function_mappings = {
         "paste": "import copy_paste_overload.clipboard_transforms; copy_paste_overload.clipboard_transforms.paste_transforms_from_clipboard()",
     },
     "clipboard_skinning": {
-        "nice_name": "Skinning/Transform (for TechAnim)",
+        "nice_name": "Skinning/Transform Clipboard (for TechAnims)",
         "copy": "import copy_paste_overload.clipboard_skinning; copy_paste_overload.clipboard_skinning.copy_vertex_weight_or_transforms()",
         "paste": "import copy_paste_overload.clipboard_skinning; copy_paste_overload.clipboard_skinning.paste_vertex_weight_or_transforms()",
     },
 }
 
 
-def overload_copy_paste(target_mapping, *args, **kwargs):
+def overload_copy_paste(target_mapping, allow_ui=True, *args, **kwargs):
     """
     Yes, this looks a bit wonky at first glance.
 
@@ -55,7 +55,45 @@ def overload_copy_paste(target_mapping, *args, **kwargs):
 
     cmds.optionVar(stringValue=(lk.option_var_key, target_mapping))
 
+    if allow_ui:
+        ensure_default_copy_paste_is_connected()
+
     return True
+
+
+def ensure_default_copy_paste_is_connected():
+    default_hotkey_mapping = {
+        "Ctrl+C": "CopySelectedNameCommand",
+        "Ctrl+V": "PasteSelectedNameCommand",
+    }
+
+    missing_shortcuts = []
+    for shortcut, shortcut_command in default_hotkey_mapping.items():
+        if cmds.hotkey(shortcut, q=True, name=True) != shortcut_command:
+            missing_shortcuts.append(shortcut)
+
+    if missing_shortcuts:
+        confirm = cmds.confirmDialog(
+            title='Copy Paste Overload',
+            message="CopyPasteOverload requires the default copy paste shortcuts to be connected.\nRe-connect shortcuts to default: '{}'".format(
+                ", ".join(missing_shortcuts)),
+            button=["Re-connect", "Cancel"],
+            defaultButton="Re-connect",
+            cancelButton="Cancel",
+            dismissString="Cancel",
+            icon="warning",
+        )
+        if confirm == "Cancel":
+            return
+
+    for shortcut in missing_shortcuts:
+        shortcut_command = default_hotkey_mapping.get(shortcut)
+        print("Re-connecting {} to default {}".format(shortcut, shortcut_command))
+        cmds.hotkey(
+            keyShortcut=shortcut.split("+")[-1].lower(),
+            ctl="ctrl" in shortcut.lower(),
+            name=shortcut_command,
+        )
 
 
 def reset_copy_paste():

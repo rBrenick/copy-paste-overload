@@ -31,14 +31,12 @@ class MaintainSelection(object):
         self.org_sel = cmds.ls(sl=True)
 
         for arg_type in self.arg_types:
-            kwargs = {arg_type: True}
-            if pm.selectType(q=True, objectComponent=True, **kwargs):
+            if pm.selectType(q=True, objectComponent=True, **{arg_type: True}):
                 self.active_type = arg_type
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        type_select_kwargs = {self.active_type: True}
-        pm.selectType(objectComponent=True, **type_select_kwargs)
+        pm.selectType(objectComponent=True, **{self.active_type: True})
         pm.select(self.org_sel)
 
 

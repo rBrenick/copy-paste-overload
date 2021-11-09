@@ -33,4 +33,4 @@ def startup():
     setup_overload_func = cpos.function_mappings.get(user_clipboard_mapping)
 
     if setup_overload_func:
-        cpos.overload_copy_paste(user_clipboard_mapping)
+        cpos.overload_copy_paste(user_clipboard_mapping, allow_ui=False)

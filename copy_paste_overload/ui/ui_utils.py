@@ -106,7 +106,7 @@ class BaseWindow(QtWidgets.QMainWindow):
         self.ui.setLayout(main_layout)
         self.setCentralWidget(self.ui)
     
-    def add_button(self, text, command, clicked_args=None):
+    def add_button(self, text, command, clicked_args=None, layout=None):
         self.ensure_main_layout()
         
         btn = QtWidgets.QPushButton(text)
@@ -115,8 +115,10 @@ class BaseWindow(QtWidgets.QMainWindow):
             btn.clicked.connect(partial(command, clicked_args))
         else:
             btn.clicked.connect(command)
-        
-        layout = self.ui.layout()
+
+        if not layout:
+            layout = self.ui.layout()
+
         layout.addWidget(btn)
         
 
