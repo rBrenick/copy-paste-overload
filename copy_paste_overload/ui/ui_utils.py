@@ -110,6 +110,7 @@ class BaseWindow(QtWidgets.QMainWindow):
         self.ensure_main_layout()
         
         btn = QtWidgets.QPushButton(text)
+        btn.setSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         if clicked_args:
             btn.clicked.connect(partial(command, clicked_args))
         else:

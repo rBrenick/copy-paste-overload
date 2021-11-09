@@ -4,15 +4,20 @@ from maya import mel
 
 class LocalConstants:
     option_var_key = "ClipboardOverloadMapping"
-    
+
 
 lk = LocalConstants
 
-
 function_mappings = {
     "clipboard_transforms": {
+        "nice_name": "TransformClipboard Copy Paste",
         "copy": "import copy_paste_overload.clipboard_transforms; copy_paste_overload.clipboard_transforms.copy_selected_transforms_to_clipboard()",
         "paste": "import copy_paste_overload.clipboard_transforms; copy_paste_overload.clipboard_transforms.paste_transforms_from_clipboard()",
+    },
+    "clipboard_skinning": {
+        "nice_name": "Skinning/Transform (for TechAnim)",
+        "copy": "import copy_paste_overload.clipboard_skinning; copy_paste_overload.clipboard_skinning.copy_vertex_weight_or_transforms()",
+        "paste": "import copy_paste_overload.clipboard_skinning; copy_paste_overload.clipboard_skinning.paste_vertex_weight_or_transforms()",
     },
 }
 
@@ -31,7 +36,10 @@ def overload_copy_paste(target_mapping, *args, **kwargs):
 
     target_mapping_info = function_mappings.get(target_mapping)
     if not target_mapping_info:
-        cmds.warning("Mapping not found: '{}', copy-paste will not be overriden. Available mappings: '{}'".format(target_mapping, ", ".join(function_mappings.keys())))
+        cmds.warning(
+            "Mapping not found: '{}', copy-paste will not be overriden. Available mappings: '{}'".format(target_mapping,
+                                                                                                         ", ".join(
+                                                                                                             function_mappings.keys())))
         return
 
     run_command_copy = target_mapping_info.get("copy")
@@ -44,9 +52,9 @@ def overload_copy_paste(target_mapping, *args, **kwargs):
     mel.eval('''global proc pasteScene(){{
     python("{}");
     }}'''.format(run_command_paste))
-    
+
     cmds.optionVar(stringValue=(lk.option_var_key, target_mapping))
-    
+
     return True
 
 
@@ -73,14 +81,14 @@ def setup_maya_hotkey(shortcut_name, shortcut, command_str):
     hotkey_set_name = "UserHotkeys"
 
     # make sure we have a user editable hotkey set active
-    
+
     # for some reason this doesn't work in batch mode? guessing some prefs aren't initialzed
     if not cmds.about(batch=True):
         if cmds.hotkeySet(current=True, q=True) == "Maya_Default":
             if not cmds.hotkeySet(hotkey_set_name, exists=True):
                 cmds.hotkeySet(hotkey_set_name, source="Maya_Default")
             cmds.hotkeySet(hotkey_set_name, edit=True, current=True)
-        
+
     name_command = '{0}Command'.format(shortcut_name)
     shortcut_key = shortcut.split("+")[-1]
 

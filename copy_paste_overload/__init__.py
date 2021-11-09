@@ -12,9 +12,11 @@ def reload_module():
         from imp import reload
 
     from . import clipboard_transforms
+    from . import clipboard_skinning
     from . import copy_paste_overload_system
     from . import copy_paste_overload_ui
     reload(clipboard_transforms)
+    reload(clipboard_skinning)
     reload(copy_paste_overload_system)
     reload(copy_paste_overload_ui)
 
