@@ -13,8 +13,9 @@ def is_skinning():
 
 
 def component_is_selected():
-    sel = pm.selected()[0]
-    return sel.__class__ in SKINNING_COMPONENT_CLASSES
+    sel = pm.selected()
+    if sel:
+        return sel[0].__class__ in SKINNING_COMPONENT_CLASSES
 
 
 class MaintainSelection(object):
