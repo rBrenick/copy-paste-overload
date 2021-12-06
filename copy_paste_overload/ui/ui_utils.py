@@ -11,6 +11,9 @@ from PySide2 import QtGui
 from shiboken2 import wrapInstance
 from PySide2 import QtUiTools
 
+import sys
+if sys.version_info.major > 2:
+    long = int
 
 UI_FILES_FOLDER = os.path.dirname(__file__)
 ICON_FOLDER = os.path.join(os.path.dirname(os.path.dirname(__file__)), "icons")
