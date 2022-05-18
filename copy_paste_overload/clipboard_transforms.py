@@ -60,7 +60,7 @@ def paste_transforms_from_clipboard(world_space=False):
         first_selected = sel[0]
         sys.stdout.write("No matching transforms found, remapping to '{}'\n".format(first_selected.name()))
         existing_nodes = [first_selected]
-        all_node_data[first_selected.name()] = all_node_data.values()[0]
+        all_node_data[first_selected.name()] = list(all_node_data.values())[0]
 
     world_space_affecting_attrs = ["translateX", "translateY", "translateZ",
                                    "rotateX", "rotateY", "rotateZ",
