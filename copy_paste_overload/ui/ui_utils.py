@@ -5,11 +5,22 @@ import sys
 from functools import partial
 
 # Not even going to pretend to have Maya 2016 support
-from PySide2 import QtCore
-from PySide2 import QtWidgets
-from PySide2 import QtGui
-from shiboken2 import wrapInstance
-from PySide2 import QtUiTools
+try:  # Qt6 / PySide6 (Maya 2025 and newer)
+    from PySide6 import QtCore
+    from PySide6 import QtWidgets
+    from PySide6 import QtGui
+    from shiboken6 import wrapInstance
+    from PySide6 import QtUiTools
+
+    QT_BINDING = "PySide6"
+except ImportError:  # Qt5 / PySide2 (Maya 2024 and older)
+    from PySide2 import QtCore
+    from PySide2 import QtWidgets
+    from PySide2 import QtGui
+    from shiboken2 import wrapInstance
+    from PySide2 import QtUiTools
+
+    QT_BINDING = "PySide2"
 
 import sys
 if sys.version_info.major > 2:
